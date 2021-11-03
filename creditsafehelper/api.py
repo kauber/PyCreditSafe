@@ -1,5 +1,6 @@
 import requests
 import json
+from typing import Optional
 from creditsafehelper.CSconfig import BaseURLs, Countries
 
 
@@ -54,7 +55,7 @@ class CreditSafeHelper(object):
         response = requests.request("GET", url, headers=headers, data=payload)
         try:
             response.raise_for_status()
-        except requests.exceptions.HTTPError as e:
+        except requests.exceptions.HTTPError as http_err:
             self.token = self.get_new_token()
 
         headers = {'Authorization': 'Bearer {}'.format(self.token)}
@@ -63,7 +64,7 @@ class CreditSafeHelper(object):
         return json_data
 
     def get_closest_matches(self, targetcompany: str, numentries: int, *args,
-                            **kwargs) -> list:
+                            **kwargs) -> Optional[list]:
         """
         This function will return the closest matches to a company name we send to creditsafe. Ampersands are removed
         from the company name as they cause errors
